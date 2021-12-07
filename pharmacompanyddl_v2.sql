@@ -1,0 +1,125 @@
+drop database pharmacompany;
+create database pharmacompany;
+
+\c pharmacompany
+
+
+CREATE TABLE 	DRUG
+ (	DID INT NOT NULL,
+	DName VARCHAR(100),
+	Price INT NOT NULL,
+	Composition VARCHAR(500),
+	UNIQUE (DID),
+	UNIQUE (DName),
+	PRIMARY KEY (DID,DName)
+       );
+
+
+CREATE TABLE 	RAW_MATERIALS
+ (	IID INT NOT NULL,
+	API VARCHAR(100), 
+	Quantity INT,
+	PRIMARY KEY (IID)	);
+
+
+CREATE TABLE 	EMPLOYEE
+ (	Fname VARCHAR(100) NOT NULL,
+	Lname VARCHAR(100) NOT NULL,
+	EID VARCHAR(50) UNIQUE NOT NULL,
+	Mgr_ID VARCHAR(50),
+	Job_Position VARCHAR(100),
+	Salary INT,
+	Age INT,
+	Address	 VARCHAR(30),
+	Gender CHAR,
+	Start_Date DATE,
+	Dept_No INT NOT NULL,
+	UNIQUE (Fname),
+	PRIMARY KEY (EID)     );
+	
+CREATE TABLE 	DEPARTMENT
+ (	Dept_Name VARCHAR(100)  NOT NULL,
+	DNo INT NOT NULL, 
+	Mgr_ID VARCHAR(50) NOT NULL,
+	Mgr_Name VARCHAR(100),
+	UNIQUE (Dept_Name),
+	PRIMARY KEY (DNo),
+	FOREIGN KEY (Mgr_ID) REFERENCES  EMPLOYEE(EID),
+	FOREIGN KEY (Mgr_Name) REFERENCES  EMPLOYEE(Fname)	);
+	
+	
+
+
+
+CREATE TABLE 	FORMULATION
+ (	PID INT  NOT NULL,
+	Testing VARCHAR(100), 
+	Conclusion VARCHAR(100),
+	RID INT,
+	DrugID INT,
+	UNIQUE (PID),
+	FOREIGN KEY (RID) REFERENCES RAW_MATERIALS(IID),
+	FOREIGN KEY (DrugID) REFERENCES DRUG(DID)	);
+
+
+
+CREATE TABLE 	MANUFACTURING
+ (	Machinery VARCHAR(100),
+	Status VARCHAR(100),
+	Start_date DATE,
+	Last_date DATE,
+	D_ID INT,
+	EmpID VARCHAR(50),
+        PRIMARY KEY (D_ID),
+	FOREIGN KEY (D_ID) REFERENCES DRUG(DID),
+	FOREIGN KEY (EmpID) REFERENCES EMPLOYEE(EID) );
+
+CREATE TABLE 	CLINICAL_STUDY
+ (	Phase_ID INT NOT NULL,
+	Drug_in_study VARCHAR(100),
+	Phase INT,
+	Conclusion VARCHAR(100),
+	Drug_ID INT,
+	Emp_ID VARCHAR(50),
+	UNIQUE (Phase_ID),
+	FOREIGN KEY (Drug_ID) REFERENCES DRUG(DID),
+	FOREIGN KEY (Emp_ID) REFERENCES EMPLOYEE(EID) );
+
+CREATE TABLE  EXPORTS
+ (	Drug_identification INT NOT NULL,
+	Type VARCHAR(100),
+	D_name VARCHAR(100),
+	Locations VARCHAR(100),
+	Quantity INT,
+	Employee_ID VARCHAR(50),
+        PRIMARY KEY (Drug_identification,Employee_ID ),
+	FOREIGN KEY (Drug_identification) REFERENCES DRUG(DID),
+	FOREIGN KEY (D_Name) REFERENCES DRUG(DName),
+	FOREIGN KEY (Employee_ID) REFERENCES EMPLOYEE(EID)  );
+
+CREATE TABLE  LICENSE
+ (      License_authority VARCHAR(100),
+        Approved_by VARCHAR(100), 
+        Drug_ID INT,
+        
+        PRIMARY KEY (Drug_ID),
+        FOREIGN KEY (Drug_ID) References DRUG(DID)
+       );
+
+
+CREATE TABLE LOGININFO
+(      Employee_ID VARCHAR(50) UNIQUE NOT NULL,
+       Password INT UNIQUE NOT NULL,
+
+       PRIMARY KEY (Employee_ID,Password),
+       FOREIGN KEY (Employee_ID) References EMPLOYEE(EID)  );
+
+
+
+        
+
+
+
+
+
+
